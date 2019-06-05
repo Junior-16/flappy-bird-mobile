@@ -59,15 +59,16 @@ public class Bird{
     }
 
     public void climb() {
-        if (this.climbing == 10) {
+        if (this.climbing == 5) {
             this.climbing = 0;
         } else {
             this.climbing += 1;
-            this.y -= 10;
+            this.y -= 15;
         }
     }
 
     public int getClimbing(){
+
         return this.climbing;
     }
 }

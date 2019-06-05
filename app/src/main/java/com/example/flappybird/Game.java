@@ -4,22 +4,27 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import com.example.componets.Bird;
 import com.example.componets.Bar;
+import com.example.componets.Text;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread thread;
     private Context context;
-    private Bitmap background;
     private boolean initComponents = false;
+
     private Bird bird;
     private Bar bar;
+    private Text text;
+    private Bitmap background;
+
     private boolean start = false;
     private boolean tap = false;
 
@@ -30,10 +35,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         thread = new GameThread(getHolder(), this);
         setFocusable(true);
 
-    }
-
-    public Bitmap getBackGround() {
-        return  this.background;
     }
 
     @Override
@@ -91,9 +92,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawBitmap(this.background,0,0, null);
         this.bird.draw(canvas);
         this.bar.draw(canvas);
+        if (!this.start){
+            this.text.draw(canvas);
+        }
+
 
     }
-
 
     public boolean getInitComponets(){
 
@@ -111,10 +115,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.initComponents = true;
 
         this.bird = new Bird(getResources(), 55, (getHeight() / 2) - 150);
         this.bar = new Bar(this.context, 0, 1265, getWidth());
+        this.text = new Text(getWidth() / 5, getHeight() / 2, context);
+        this.initComponents = true;
 
     }
 

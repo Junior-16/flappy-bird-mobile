@@ -42,13 +42,13 @@ public class Bar {
     }
 
     public void move(){
-        if (this.x2 == 0 && this.x1 < 0) {
+        if (this.x2 <= 0 && this.x1 <= -133) {
             this.x1 = this.outOfScreen-12;
         }
-        if (this.x1 == 0 && this.x2 < 0) {
+        if (this.x1 <= 0 && this.x2 <= -133) {
             this.x2 = this.outOfScreen-12;
         }
-        this.x1 -= 12;
-        this.x2 -= 12;
+        this.x1 -= 8;
+        this.x2 -= 8;
     }
 }

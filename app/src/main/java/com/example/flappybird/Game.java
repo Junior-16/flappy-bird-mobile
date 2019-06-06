@@ -9,17 +9,22 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import java.util.Random;
 
 import com.example.componets.Bird;
 import com.example.componets.Bar;
+import com.example.componets.Pipe;
 import com.example.componets.Text;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread thread;
     private Context context;
-    private boolean initComponents = false;
+    private Random random;
 
+    private boolean initComponents = false;
+    private Pipe pipe1;
+    private Pipe pipe2;
     private Bird bird;
     private Bar bar;
     private Text text;
@@ -29,6 +34,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private boolean tap = false;
 
     public Game(Context context) {
+
         super(context);
         this.context = context;
         getHolder().addCallback(this);
@@ -68,14 +74,28 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
 
+        if (this.start) {
+
+            this.pipe1.move();
+            this.pipe2.move();
+
+        }
+
         if (!this.start){
+
             this.bird.fly();
+
         } else if (!this.tap){
+
             this.bird.fall();
+
         } else {
             this.bird.climb();
+
             if (this.bird.getClimbing() == 0) {
+
                 this.tap = false;
+
             }
         }
 
@@ -92,8 +112,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawBitmap(this.background,0,0, null);
         this.bird.draw(canvas);
         this.bar.draw(canvas);
+
         if (!this.start){
             this.text.draw(canvas);
+        }
+        else {
+            this.pipe1.draw(canvas);
+            this.pipe2.draw(canvas);
         }
 
 
@@ -116,9 +141,18 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             e.printStackTrace();
         }
 
+        this.random = new Random();
+
+        //constant 32 means the width of the Bitmap, 240 means the distance between the pipes
+        this.pipe1 = new Pipe(getResources(),getWidth(), 1, getWidth());
+        this.pipe2 = new Pipe(getResources(), this.pipe1.getX()+280, 2, getWidth());
+
         this.bird = new Bird(getResources(), 55, (getHeight() / 2) - 150);
+
         this.bar = new Bar(this.context, 0, 1265, getWidth());
+
         this.text = new Text(getWidth() / 5, getHeight() / 2, context);
+
         this.initComponents = true;
 
     }
@@ -127,6 +161,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent tap) {
         if (tap.getActionMasked() == tap.ACTION_DOWN){
             this.tap = true;
+        }
+        if (!this.start) {
             this.start = true;
         }
         return true;

@@ -23,7 +23,6 @@ public class Bird{
         this.birdWingsUp = BitmapFactory.decodeResource(res, R.drawable.wing_up);
         this.x = x;
         this.y = y;
-        System.out.println("Altura no smarthphone: " + y*2);
     }
 
     public void draw(Canvas canvas) {

@@ -4,12 +4,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.support.v4.content.res.ResourcesCompat;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.util.Random;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import com.example.componets.Bird;
 import com.example.componets.Bar;
@@ -18,17 +20,21 @@ import com.example.componets.Text;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
+    private final int addPipeX = getWidth() - 32;
+
     private GameThread thread;
     private Context context;
-    private Random random;
 
     private boolean initComponents = false;
-    private Pipe pipe1;
+    /*private Pipe pipe1;
     private Pipe pipe2;
+    private Pipe pipe3;*/
+    private Pipe[] pipeList;
     private Bird bird;
     private Bar bar;
     private Text text;
     private Bitmap background;
+    private Queue<Integer> pipeIndexQueue;
 
     private boolean start = false;
     private boolean tap = false;
@@ -72,12 +78,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
      * Updates components positions
      * */
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void update() {
 
         if (this.start) {
 
-            this.pipe1.move();
-            this.pipe2.move();
+            for (Pipe p : this.pipeList) {
+                p.move();
+            }
 
         }
 
@@ -116,11 +124,24 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (!this.start){
             this.text.draw(canvas);
         }
+
         else {
-            this.pipe1.draw(canvas);
-            this.pipe2.draw(canvas);
+            for (Pipe p : this.pipeList) {
+                p.draw(canvas);
+            }
         }
 
+
+    }
+
+    public void updatePipeQueue() {
+
+        int frontPipe = this.pipeIndexQueue.peek();
+
+        if (this.pipeList[frontPipe].getX() == 0) {
+            frontPipe = this.pipeIndexQueue.remove();
+            this.pipeIndexQueue.add(frontPipe);
+        }
 
     }
 
@@ -130,6 +151,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void initComponents() {
         try {
             Bitmap bgBuffer = BitmapFactory.decodeStream(this.context.getAssets().open("surface.jpg"));
@@ -141,16 +163,19 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             e.printStackTrace();
         }
 
-        this.random = new Random();
+        this.pipeIndexQueue = new LinkedList<Integer>();
+        this.pipeList = new Pipe[4];
 
-        //constant 32 means the width of the Bitmap, 240 means the distance between the pipes
-        this.pipe1 = new Pipe(getResources(),getWidth(), 1, getWidth());
-        this.pipe2 = new Pipe(getResources(), this.pipe1.getX()+280, 2, getWidth());
+        //constant 280 means the distance between the pipes
+        int x = getWidth();
+        for (int i = 0; i < this.pipeList.length; i++) {
+            this.pipeIndexQueue.add(i);
+            this.pipeList[i] = new Pipe(getResources(), x, getWidth());
+            x += 280;
+        }
 
         this.bird = new Bird(getResources(), 55, (getHeight() / 2) - 150);
-
         this.bar = new Bar(this.context, 0, 1265, getWidth());
-
         this.text = new Text(getWidth() / 5, getHeight() / 2, context);
 
         this.initComponents = true;
@@ -165,6 +190,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (!this.start) {
             this.start = true;
         }
+        System.out.println(this.pipeIndexQueue.peek());
         return true;
     }
 

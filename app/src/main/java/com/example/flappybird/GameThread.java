@@ -25,8 +25,6 @@ public class GameThread extends Thread{
         long startTime;
         long timeMillis;
         long waitTime;
-        long totalTime = 0;
-        int frameCount = 0;
         long targetTime = 1000/FPS;
 
         while(running) {
@@ -41,6 +39,7 @@ public class GameThread extends Thread{
                         game.initComponents();
 
                     }
+                    this.game.updatePipeQueue();
                     this.game.update();
                     this.game.drawCanvas(canvas);
 
@@ -64,7 +63,7 @@ public class GameThread extends Thread{
             try {
                 this.sleep(waitTime);
             } catch (Exception e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
 
         }

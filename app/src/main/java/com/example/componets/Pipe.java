@@ -21,12 +21,15 @@ public class Pipe {
     private int y = 1265;
     private int resetPos;
 
-    public Pipe(Resources res, int x, int type, int screenWidth) {
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public Pipe(Resources res, int x, int screenWidth) {
 
         this.x = x;
         this.resetPos = screenWidth;
-        this.opening = this.generatePipeOpening();
+        this.opening = this.generateRandom(250, 450);
         this.pipeUp = BitmapFactory.decodeResource(res, R.drawable.pipe_up);
+
+        int type = generateRandom(0, 5);
 
         if (type == 1) {
 
@@ -36,9 +39,13 @@ public class Pipe {
 
             this.pipeDown = BitmapFactory.decodeResource(res, R.drawable.pipe_down2);
 
-        } else {
+        } else if (type == 3){
 
             this.pipeDown = BitmapFactory.decodeResource(res, R.drawable.pipe_down3);
+
+        } else {
+
+            this.pipeDown = BitmapFactory.decodeResource(res, R.drawable.pipe_down4);
 
         }
 
@@ -63,12 +70,14 @@ public class Pipe {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void move() {
 
         if (this.x <= -280){
 
             this.x = this.resetPos;
-            this.opening = generatePipeOpening();
+            this.opening = generateRandom(150, 450);
+            //System.out.println(this.opening);
 
         }
 
@@ -81,10 +90,11 @@ public class Pipe {
      * */
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private int generatePipeOpening() {
+    private int generateRandom(int min, int max) {
 
-        return ThreadLocalRandom.current().nextInt(250, 450);
+        return ThreadLocalRandom.current().nextInt(min, max);
 
     }
+
 
 }

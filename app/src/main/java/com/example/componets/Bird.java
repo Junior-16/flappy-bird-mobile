@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import com.example.flappybird.R;
 
@@ -14,7 +15,6 @@ public class Bird{
     private boolean birdRendered = true;
     private int x;
     private int y;
-    private float gravity = 0.0625f;
     private boolean climb = false;
     private int climbing = 0; // how many times the bird will climb
 
@@ -58,16 +58,22 @@ public class Bird{
     }
 
     public void climb() {
-        if (this.climbing == 5) {
+        if (this.climbing == 3) {
             this.climbing = 0;
         } else {
             this.climbing += 1;
-            this.y -= 15;
+            this.y -= 20;
         }
     }
 
     public int getClimbing(){
 
         return this.climbing;
+
     }
+
+    public int getY() {
+        return this.y;
+    }
+
 }

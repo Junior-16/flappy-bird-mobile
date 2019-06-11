@@ -57,12 +57,6 @@ public class Pipe {
 
     }
 
-    public int getX() {
-
-        return this.x;
-
-    }
-
     public void draw(Canvas canvas) {
 
         canvas.drawBitmap(this.pipeDown, this.x, this.y, null);
@@ -77,7 +71,6 @@ public class Pipe {
 
             this.x = this.resetPos;
             this.opening = generateRandom(150, 450);
-            //System.out.println(this.opening);
 
         }
 
@@ -94,6 +87,27 @@ public class Pipe {
 
         return ThreadLocalRandom.current().nextInt(min, max);
 
+    }
+
+    /*
+     * Abscissa of the pipe (top left corner)
+     * */
+    public int getX() {
+        return this.x;
+    }
+
+    /*
+     * Returns the ordinate of the down pipe (top left corner)
+     * */
+    public int getDownY() {
+        return this.y /*-this.pipeDown.getHeight()*/;
+    }
+
+    /*
+     * Returns the ordinate of the upper pipe (bottom left corner)
+     * */
+    public int getUpY() {
+        return this.y -  this.pipeDown.getHeight() - this.opening;
     }
 
 

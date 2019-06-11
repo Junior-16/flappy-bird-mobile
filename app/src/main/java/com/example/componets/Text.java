@@ -10,7 +10,7 @@ import com.example.flappybird.R;
 
 public class Text {
 
-    private String initText = "Tap to start";
+    private String text = "Tap to start";
     private Typeface font;
     private Paint paint;
     private int x, y;
@@ -29,7 +29,12 @@ public class Text {
 
     public void draw(Canvas canvas) {
 
-        canvas.drawText(this.initText, this.x, this.y, this.paint);
+        canvas.drawText(this.text, this.x, this.y, this.paint);
 
     }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
 }

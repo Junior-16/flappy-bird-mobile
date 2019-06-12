@@ -4,13 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import java.util.Random;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -21,8 +19,6 @@ import com.example.componets.Text;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
-    private final int addPipeX = getWidth() - 32;
-
     private GameThread thread;
     private Context context;
 
@@ -30,10 +26,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private Pipe[] pipeList;
     private Bird bird;
     private Bar bar;
-    private Text text;
+    private Text text0;
+    private Text text1;
     private Bitmap background;
     private Queue<Integer> pipeIndexQueue;
-    private Rect birdRect;
 
     private boolean start = false;
     private boolean tap = false;
@@ -81,11 +77,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void update() {
 
-        if (this.collides()) {
-            this.end = true;
-            this.text.setText("Game Over");
-        }
-
         if (!this.end) {
 
             if (this.start) {
@@ -105,6 +96,16 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             } else if (!this.tap) {
 
                 this.bird.fall();
+
+                if (this.collides()) {
+                    this.end = true;
+                    this.text0.setX(getWidth() / 4);
+                    this.text0.setY(getHeight() / 3);
+                    this.text0.setText("Game Over");
+                    this.text1.setText("Tap to restart");
+                    this.text1.setX(getWidth()/5);
+                    this.bird.killRevive();
+                }
 
             } else {
                 this.bird.climb();
@@ -131,7 +132,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         this.bar.draw(canvas);
 
         if (!this.start){
-            this.text.draw(canvas);
+            this.text0.draw(canvas);
         }
 
         else {
@@ -143,7 +144,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         this.bird.draw(canvas);
 
         if (this.end) {
-            this.text.draw(canvas);
+            this.text0.draw(canvas);
+            this.text1.draw(canvas);
         }
 
     }
@@ -152,7 +154,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         int frontPipe = this.pipeIndexQueue.peek();
 
-        if (this.pipeList[frontPipe].getX() <= 23) {
+        if (this.pipeList[frontPipe].getX() <= -32) {
             frontPipe = this.pipeIndexQueue.remove();
             this.pipeIndexQueue.add(frontPipe);
         }
@@ -160,19 +162,21 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     /*
-     * In the first if statement, 32 means the pipe width
-     * 55 constant represents bird's abscissa
+     * Method that checks if the first pipe of the queue collides with the bird.
+     * The strategy used to do so was based in the pipe and bird positions.
      * */
+
     private boolean collides() {
+
         int frontPipe = this.pipeIndexQueue.peek();
         Pipe pipe = this.pipeList[frontPipe];
         frontPipe = pipe.getX();
 
-        if (frontPipe > 23 && frontPipe < 111) {
-            if (this.bird.getY() +24>= pipe.getDownY()) {
+        if (frontPipe >= 0 && frontPipe <= 150) {
+            if (this.bird.getY()+this.bird.getHeight() >= pipe.getPipeDownY()) {
                 return true;
             }
-            else if (this.bird.getY() <= pipe.getUpY()) {
+            else if (this.bird.getY() <= pipe.getPipeUpperY()) {
                 return true;
             }
             return false;
@@ -193,19 +197,21 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public void initComponents() {
 
         try {
+
             Bitmap bgBuffer = BitmapFactory.decodeStream(this.context.getAssets().open("surface.jpg"));
             float bgScale = (float) bgBuffer.getHeight() / (float) getHeight();
             int newWidth = Math.round(bgBuffer.getWidth() / bgScale);
             int newHeight = Math.round(bgBuffer.getHeight() / bgScale);
             this.background = Bitmap.createScaledBitmap(bgBuffer, newWidth + 15, newHeight, true);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         this.pipeIndexQueue = new LinkedList<Integer>();
         this.pipeList = new Pipe[4];
-
         int x = getWidth();
+
         for (int i = 0; i < this.pipeList.length; i++) {
             this.pipeIndexQueue.add(i);
             this.pipeList[i] = new Pipe(getResources(), x, getWidth());
@@ -215,7 +221,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         this.bird = new Bird(getResources(), 55, (getHeight() / 2) - 150);
         this.bar = new Bar(this.context, 0, 1265, getWidth());
-        this.text = new Text(getWidth() / 5, getHeight() / 2, context);
+        this.text0 = new Text(getWidth() / 5, getHeight() / 2, context);
+        this.text1 = new Text(getWidth() / 5, (getHeight() / 3)+150, context);
 
         this.initComponents = true;
 
@@ -224,15 +231,18 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     /*
      * Listener method called when a "tap" event occur
      * */
+
     @Override
     public boolean onTouchEvent(MotionEvent tap) {
+
         if (tap.getActionMasked() == tap.ACTION_DOWN){
             this.tap = true;
         }
+
         if (!this.start) {
             this.start = true;
         }
-        //System.out.println(this.pipeIndexQueue.peek());
+
         return true;
     }
 

@@ -12,31 +12,42 @@ public class Bird{
 
     private Bitmap birdWingsUp;
     private Bitmap birdWingsDown;
-    private boolean birdRendered = true;
+    private Bitmap birdDead;
+    private boolean birdRendered;
     private int x;
     private int y;
-    private boolean climb = false;
-    private int climbing = 0; // how many times the bird will climb
+    private boolean climb;
+    private int climbing; // how many times the bird will climb
+    private boolean dead;
 
     public Bird(Resources res, int x, int y) {
         this.birdWingsDown = BitmapFactory.decodeResource(res, R.drawable.wing_down);
         this.birdWingsUp = BitmapFactory.decodeResource(res, R.drawable.wing_up);
+        this.birdDead = BitmapFactory.decodeResource(res, R.drawable.wing_up);
         this.x = x;
         this.y = y;
+        this.dead = false;
+        this.climb = false;
+        this.climbing = 0;
+        this.birdRendered = true;
     }
 
     public void draw(Canvas canvas) {
-        if (this.birdRendered) {
+        if (!this.dead) {
+            if (this.birdRendered) {
 
-            canvas.drawBitmap(this.birdWingsUp, this.x, this.y, null);
+                canvas.drawBitmap(this.birdWingsUp, this.x, this.y, null);
 
-        } else {
+            } else {
 
+                canvas.drawBitmap(this.birdWingsDown, this.x, this.y, null);
+
+            }
+            this.birdRendered = !this.birdRendered;
+        } else{
             canvas.drawBitmap(this.birdWingsDown, this.x, this.y, null);
-
         }
 
-        this.birdRendered = !this.birdRendered;
     }
 
     public void fly() {
@@ -73,7 +84,18 @@ public class Bird{
     }
 
     public int getY() {
+
         return this.y;
+    }
+
+    public int getHeight() {
+
+        return this.birdWingsDown.getHeight();
+
+    }
+
+    public void killRevive() {
+        this.dead = !this.dead;
     }
 
 }

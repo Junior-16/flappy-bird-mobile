@@ -22,8 +22,8 @@ public class Text {
         this.font = ResourcesCompat.getFont(context, R.font.brabunr);
         this.paint = new Paint();
         this.paint.setTypeface(this.font);
-        this.paint.setARGB(255,175,238,238);
-        this.paint.setTextSize(120);
+        this.paint.setARGB(255,212, 255, 255);
+        this.paint.setTextSize(130);
 
     }
 
@@ -35,6 +35,14 @@ public class Text {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
 }

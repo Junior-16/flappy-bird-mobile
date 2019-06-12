@@ -39,6 +39,7 @@ public class GameThread extends Thread{
                         game.initComponents();
 
                     }
+
                     this.game.update();
                     this.game.drawCanvas(canvas);
 

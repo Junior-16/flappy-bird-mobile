@@ -26,7 +26,7 @@ public class Pipe {
 
         this.x = x;
         this.resetPos = screenWidth;
-        this.opening = this.generateRandom(250, 450);
+        this.opening = this.generateRandom(300, 500);
         this.pipeUp = BitmapFactory.decodeResource(res, R.drawable.pipe_up);
 
         int type = generateRandom(0, 5);
@@ -70,7 +70,7 @@ public class Pipe {
         if (this.x <= -280){
 
             this.x = this.resetPos;
-            this.opening = generateRandom(150, 450);
+            this.opening -= generateRandom(50, 200);
 
         }
 
@@ -83,7 +83,7 @@ public class Pipe {
      * */
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private int generateRandom(int min, int max) {
+    public int generateRandom(int min, int max) {
 
         return ThreadLocalRandom.current().nextInt(min, max);
 
@@ -99,15 +99,25 @@ public class Pipe {
     /*
      * Returns the ordinate of the down pipe (top left corner)
      * */
-    public int getDownY() {
+
+    public int getPipeDownY() {
         return this.y /*-this.pipeDown.getHeight()*/;
     }
 
     /*
      * Returns the ordinate of the upper pipe (bottom left corner)
      * */
-    public int getUpY() {
-        return this.y -  this.pipeDown.getHeight() - this.opening;
+
+    public int getPipeUpperY() {
+
+        return this.y - this.opening;
+
+    }
+
+    public int getWidth() {
+
+        return this.pipeDown.getWidth();
+
     }
 
 

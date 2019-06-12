@@ -95,7 +95,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
             } else if (!this.tap) {
 
-                this.bird.fall();
+                this.bird.fall(10);
 
                 if (this.collides()) {
                     this.end = true;
@@ -146,6 +146,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (this.end) {
             this.text0.draw(canvas);
             this.text1.draw(canvas);
+            if (this.bird.getY() < 1260) {
+                this.bird.fall(25);
+            }
         }
 
     }

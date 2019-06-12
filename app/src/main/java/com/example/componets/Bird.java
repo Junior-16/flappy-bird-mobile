@@ -23,7 +23,7 @@ public class Bird{
     public Bird(Resources res, int x, int y) {
         this.birdWingsDown = BitmapFactory.decodeResource(res, R.drawable.wing_down);
         this.birdWingsUp = BitmapFactory.decodeResource(res, R.drawable.wing_up);
-        this.birdDead = BitmapFactory.decodeResource(res, R.drawable.wing_up);
+        this.birdDead = BitmapFactory.decodeResource(res, R.drawable.dead_bird);
         this.x = x;
         this.y = y;
         this.dead = false;
@@ -45,7 +45,7 @@ public class Bird{
             }
             this.birdRendered = !this.birdRendered;
         } else{
-            canvas.drawBitmap(this.birdWingsDown, this.x, this.y, null);
+            canvas.drawBitmap(this.birdDead, this.x, this.y, null);
         }
 
     }
@@ -64,8 +64,8 @@ public class Bird{
         }
     }
 
-    public void fall() {
-        this.y += 10;
+    public void fall(int speed) {
+        this.y += speed;
     }
 
     public void climb() {

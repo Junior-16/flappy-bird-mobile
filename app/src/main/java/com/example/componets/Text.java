@@ -22,7 +22,7 @@ public class Text {
         this.font = ResourcesCompat.getFont(context, R.font.brabunr);
         this.paint = new Paint();
         this.paint.setTypeface(this.font);
-        this.paint.setARGB(255,212, 255, 255);
+        this.paint.setARGB(255,255, 0, 0);
         this.paint.setTextSize(130);
 
     }

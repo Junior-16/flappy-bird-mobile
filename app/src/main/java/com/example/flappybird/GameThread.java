@@ -4,10 +4,15 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
+/*
+ * Game Thread class intents to create the game loop.
+ * This class communicates with the class Game through
+ * the update() and drawCanvas() methods.
+ * */
+
 public class GameThread extends Thread{
 
     private int FPS = 30;
-    private double avgFPS;
     private SurfaceHolder surfaceHolder;
     private Game game;
     private boolean running;
@@ -34,7 +39,7 @@ public class GameThread extends Thread{
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
-                    if (!game.getInitComponets()) {
+                    if (!game.getInitComponents()) {
 
                         game.initComponents();
 

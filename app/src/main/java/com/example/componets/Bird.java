@@ -4,11 +4,10 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 
 import com.example.flappybird.R;
 
-public class Bird{
+public class Bird {
 
     private Bitmap birdWingsUp;
     private Bitmap birdWingsDown;
@@ -88,13 +87,17 @@ public class Bird{
         return this.y;
     }
 
+    public void setY(int y) {
+        this.y = y;
+    }
+
     public int getHeight() {
 
         return this.birdWingsDown.getHeight();
 
     }
 
-    public void killRevive() {
+    public void changeStatus() {
         this.dead = !this.dead;
     }
 

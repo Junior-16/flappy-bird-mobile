@@ -9,6 +9,7 @@ import android.support.annotation.RequiresApi;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -22,7 +23,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread thread;
     private Context context;
 
-    private boolean initComponents = false;
     private Pipe[] pipeList;
     private Bird bird;
     private Bar bar;
@@ -34,6 +34,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private boolean start = false;
     private boolean tap = false;
     private boolean end = false;
+    private boolean initComponents = false;
+    private int score;
+    private String scoreString;
 
     public Game(Context context) {
 
@@ -87,6 +90,16 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
                 this.updatePipeQueue();
 
+                if (this.collides() || this.bird.getY() >= 1240) {
+                    this.end = true;
+                    this.text0.setX(getWidth() / 4);
+                    this.text0.setY(getHeight() / 3);
+                    this.text0.setText("Game Over");
+                    this.text1.setText("Tap to restart");
+                    this.text1.setX(getWidth()/5);
+                    this.bird.changeStatus();
+                }
+
             }
 
             if (!this.start) {
@@ -97,17 +110,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
                 this.bird.fall(10);
 
-                if (this.collides()) {
-                    this.end = true;
-                    this.text0.setX(getWidth() / 4);
-                    this.text0.setY(getHeight() / 3);
-                    this.text0.setText("Game Over");
-                    this.text1.setText("Tap to restart");
-                    this.text1.setX(getWidth()/5);
-                    this.bird.killRevive();
-                }
-
             } else {
+
                 this.bird.climb();
 
                 if (this.bird.getClimbing() == 0) {
@@ -146,8 +150,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (this.end) {
             this.text0.draw(canvas);
             this.text1.draw(canvas);
-            if (this.bird.getY() < 1260) {
-                this.bird.fall(25);
+            if (this.bird.getY() < 1240) {
+                this.bird.fall(30);
             }
         }
 
@@ -160,6 +164,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (this.pipeList[frontPipe].getX() <= -32) {
             frontPipe = this.pipeIndexQueue.remove();
             this.pipeIndexQueue.add(frontPipe);
+            this.score += 1;
+            this.scoreString = Integer.toString(this.score);
         }
 
     }
@@ -176,21 +182,25 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         frontPipe = pipe.getX();
 
         if (frontPipe >= 0 && frontPipe <= 150) {
+
             if (this.bird.getY()+this.bird.getHeight() >= pipe.getPipeDownY()) {
                 return true;
             }
+
             else if (this.bird.getY() <= pipe.getPipeUpperY()) {
                 return true;
             }
+
             return false;
 
         }
+
         return false;
 
     }
 
 
-    public boolean getInitComponets(){
+    public boolean getInitComponents(){
 
         return this.initComponents;
 
@@ -214,13 +224,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         this.pipeIndexQueue = new LinkedList<Integer>();
         this.pipeList = new Pipe[4];
         int x = getWidth();
+        this.score = 0;
+        this.scoreString = "0";
 
         for (int i = 0; i < this.pipeList.length; i++) {
             this.pipeIndexQueue.add(i);
             this.pipeList[i] = new Pipe(getResources(), x, getWidth());
             x += 320;
         }
-
 
         this.bird = new Bird(getResources(), 55, (getHeight() / 2) - 150);
         this.bar = new Bar(this.context, 0, 1265, getWidth());
@@ -244,6 +255,25 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         if (!this.start) {
             this.start = true;
+        }
+
+        if (this.end) {
+
+            this.pipeIndexQueue.clear();
+            this.start = true;
+            this.end = false;
+            this.bird.changeStatus();
+            this.bird.setY((getHeight() / 2) - 150);
+            int pos = getWidth();
+            this.score = 0;
+
+            for (int i = 0; i < this.pipeList.length; i++) {
+                this.pipeList[i].setX(pos);
+                this.pipeList[i].setOpening();
+                this.pipeIndexQueue.add(i);
+                pos += 320;
+            }
+
         }
 
         return true;

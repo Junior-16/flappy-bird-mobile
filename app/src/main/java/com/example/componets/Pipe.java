@@ -70,7 +70,7 @@ public class Pipe {
         if (this.x <= -280){
 
             this.x = this.resetPos;
-            this.opening -= generateRandom(50, 200);
+            this.opening -= generateRandom(50, 100);
 
         }
 
@@ -83,7 +83,7 @@ public class Pipe {
      * */
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public int generateRandom(int min, int max) {
+    private int generateRandom(int min, int max) {
 
         return ThreadLocalRandom.current().nextInt(min, max);
 
@@ -92,8 +92,13 @@ public class Pipe {
     /*
      * Abscissa of the pipe (top left corner)
      * */
+
     public int getX() {
         return this.x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
     }
 
     /*
@@ -101,7 +106,7 @@ public class Pipe {
      * */
 
     public int getPipeDownY() {
-        return this.y /*-this.pipeDown.getHeight()*/;
+        return this.y;
     }
 
     /*
@@ -114,11 +119,8 @@ public class Pipe {
 
     }
 
-    public int getWidth() {
-
-        return this.pipeDown.getWidth();
-
+    public void setOpening() {
+        this.opening = this.generateRandom(300, 500);
     }
-
 
 }

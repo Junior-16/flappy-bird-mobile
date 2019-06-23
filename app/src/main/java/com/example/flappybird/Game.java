@@ -16,7 +16,14 @@ import java.util.Queue;
 import com.example.componets.Bird;
 import com.example.componets.Bar;
 import com.example.componets.Pipe;
+import com.example.componets.Score;
 import com.example.componets.Text;
+
+/*
+*
+* Grateful to this site: https://www.spriters-resource.com/mobile/flappybird/sheet/59894/
+* I get the sprites from there.
+* */
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -30,13 +37,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private Text text1;
     private Bitmap background;
     private Queue<Integer> pipeIndexQueue;
+    private Score score;
 
     private boolean start = false;
     private boolean tap = false;
     private boolean end = false;
     private boolean initComponents = false;
-    private int score;
-    private String scoreString;
 
     public Game(Context context) {
 
@@ -61,7 +67,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        boolean retry = false;
+        boolean retry = true;
         while (retry) {
             try {
                 thread.setRunning(false);
@@ -146,6 +152,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         this.bird.draw(canvas);
+        this.score.draw(canvas);
 
         if (this.end) {
             this.text0.draw(canvas);
@@ -160,12 +167,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private void updatePipeQueue() {
 
         int frontPipe = this.pipeIndexQueue.peek();
+        /*if (this.pipeList[frontPipe].getX() <= -32) {
 
-        if (this.pipeList[frontPipe].getX() <= -32) {
+        }*/
+
+        if (this.pipeList[frontPipe].getX() <= 55) {
             frontPipe = this.pipeIndexQueue.remove();
             this.pipeIndexQueue.add(frontPipe);
-            this.score += 1;
-            this.scoreString = Integer.toString(this.score);
+            this.score.increase();
         }
 
     }
@@ -224,8 +233,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         this.pipeIndexQueue = new LinkedList<Integer>();
         this.pipeList = new Pipe[4];
         int x = getWidth();
-        this.score = 0;
-        this.scoreString = "0";
 
         for (int i = 0; i < this.pipeList.length; i++) {
             this.pipeIndexQueue.add(i);
@@ -233,6 +240,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             x += 320;
         }
 
+        this.score = new Score(getContext(), getWidth()/2, getWidth()/2 + 30, getHeight() / 5);
         this.bird = new Bird(getResources(), 55, (getHeight() / 2) - 150);
         this.bar = new Bar(this.context, 0, 1265, getWidth());
         this.text0 = new Text(getWidth() / 5, getHeight() / 2, context);
@@ -265,7 +273,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             this.bird.changeStatus();
             this.bird.setY((getHeight() / 2) - 150);
             int pos = getWidth();
-            this.score = 0;
+            this.score.reset();
 
             for (int i = 0; i < this.pipeList.length; i++) {
                 this.pipeList[i].setX(pos);

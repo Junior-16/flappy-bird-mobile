@@ -68,11 +68,11 @@ public class Bird {
     }
 
     public void climb() {
-        if (this.climbing == 3) {
+        if (this.climbing == 4) {
             this.climbing = 0;
         } else {
             this.climbing += 1;
-            this.y -= 20;
+            this.y -= 15;
         }
     }
 

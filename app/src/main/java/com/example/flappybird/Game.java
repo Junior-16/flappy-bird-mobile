@@ -20,10 +20,10 @@ import com.example.componets.Score;
 import com.example.componets.Text;
 
 /*
-*
-* Grateful to this site: https://www.spriters-resource.com/mobile/flappybird/sheet/59894/
-* I get the sprites from there.
-* */
+ *
+ * Grateful to this site: https://www.spriters-resource.com/mobile/flappybird/sheet/59894/
+ * I get the sprites from there.
+ * */
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -35,6 +35,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private Bar bar;
     private Text text0;
     private Text text1;
+    private Text text2;
     private Bitmap background;
     private Queue<Integer> pipeIndexQueue;
     private Score score;
@@ -43,6 +44,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private boolean tap = false;
     private boolean end = false;
     private boolean initComponents = false;
+    private int gravity;
+    private int bestScore;
 
     public Game(Context context) {
 
@@ -101,9 +104,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                     this.text0.setX(getWidth() / 4);
                     this.text0.setY(getHeight() / 3);
                     this.text0.setText("Game Over");
-                    this.text1.setText("Tap to restart");
-                    this.text1.setX(getWidth()/5);
                     this.bird.changeStatus();
+                    if (this.score.getScore() > this.bestScore) {
+                        this.bestScore = this.score.getScore();
+                    }
+                    this.text2.setText("Best: "+this.bestScore);
                 }
 
             }
@@ -112,9 +117,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
                 this.bird.fly();
 
-            } else if (!this.tap) {
+            } else if (!this.tap && !this.end) {
 
-                this.bird.fall(10);
+                this.bird.fall(this.gravity);
+                this.gravity += 2;
 
             } else {
 
@@ -157,21 +163,27 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         if (this.end) {
             this.text0.draw(canvas);
             this.text1.draw(canvas);
+            this.text2.draw(canvas);
+
             if (this.bird.getY() < 1240) {
-                this.bird.fall(30);
+                this.bird.fall(this.gravity);
+                this.gravity += 5;
             }
         }
+        //canvas.drawCircle(0, this.bird.getY(), 5, this.paint);
+        //canvas.drawCircle(150, this.bird.getY(), 5, this.paint);
 
     }
 
     private void updatePipeQueue() {
 
         int frontPipe = this.pipeIndexQueue.peek();
-        /*if (this.pipeList[frontPipe].getX() <= -32) {
 
+        /*if (this.pipeList[frontPipe].getX() <= 55) {
+            this.score.increase();
         }*/
 
-        if (this.pipeList[frontPipe].getX() <= 55) {
+        if (this.pipeList[frontPipe].getX() <= -10) {
             frontPipe = this.pipeIndexQueue.remove();
             this.pipeIndexQueue.add(frontPipe);
             this.score.increase();
@@ -225,11 +237,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             int newWidth = Math.round(bgBuffer.getWidth() / bgScale);
             int newHeight = Math.round(bgBuffer.getHeight() / bgScale);
             this.background = Bitmap.createScaledBitmap(bgBuffer, newWidth + 15, newHeight, true);
-
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
-
         this.pipeIndexQueue = new LinkedList<Integer>();
         this.pipeList = new Pipe[4];
         int x = getWidth();
@@ -240,12 +251,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             x += 320;
         }
 
-        this.score = new Score(getContext(), getWidth()/2, getWidth()/2 + 30, getHeight() / 5);
+        this.score = new Score(getContext(), getWidth()/2 - 30, getWidth()/2 + 30, getHeight() / 5);
         this.bird = new Bird(getResources(), 55, (getHeight() / 2) - 150);
         this.bar = new Bar(this.context, 0, 1265, getWidth());
-        this.text0 = new Text(getWidth() / 5, getHeight() / 2, context);
-        this.text1 = new Text(getWidth() / 5, (getHeight() / 3)+150, context);
-
+        this.text0 = new Text(context,getWidth() / 5, getHeight() / 2, "Tap to Miaau");
+        this.text1 = new Text(context,getWidth() / 5, (getHeight() / 3)+150, "Tap to Restart");
+        this.text2 = new Text(context,getWidth() / 5 + 140, getHeight() / 2 + 10, "Best: ");
         this.initComponents = true;
 
     }
@@ -257,19 +268,21 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent tap) {
 
-        if (tap.getActionMasked() == tap.ACTION_DOWN){
+        if (!this.end && tap.getActionMasked() == tap.ACTION_DOWN){
             this.tap = true;
+            this.gravity = 0;
         }
 
         if (!this.start) {
             this.start = true;
         }
 
-        if (this.end) {
+        if (this.end && this.bird.getY() >= 1240) {
 
             this.pipeIndexQueue.clear();
             this.start = true;
             this.end = false;
+            this.gravity = 0;
             this.bird.changeStatus();
             this.bird.setY((getHeight() / 2) - 150);
             int pos = getWidth();

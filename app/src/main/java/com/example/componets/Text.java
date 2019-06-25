@@ -10,15 +10,16 @@ import com.example.flappybird.R;
 
 public class Text {
 
-    private String text = "Tap to start";
+    private String text;
     private Typeface font;
     private Paint paint;
     private int x, y;
 
-    public Text(int x, int y, Context context) {
+    public Text(Context context, int x, int y, String text) {
 
         this.x = x;
         this.y = y;
+        this.text = text;
         this.font = ResourcesCompat.getFont(context, R.font.brabunr);
         this.paint = new Paint();
         this.paint.setTypeface(this.font);

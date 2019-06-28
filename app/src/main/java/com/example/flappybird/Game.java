@@ -254,7 +254,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         this.score = new Score(getContext(), getWidth()/2 - 30, getWidth()/2 + 30, getHeight() / 5);
         this.bird = new Bird(getResources(), 55, (getHeight() / 2) - 150);
         this.bar = new Bar(this.context, 0, 1265, getWidth());
-        this.text0 = new Text(context,getWidth() / 5, getHeight() / 2, "Tap to Miaau");
+        this.text0 = new Text(context,getWidth() / 5, getHeight() / 2, "Tap to start");
         this.text1 = new Text(context,getWidth() / 5, (getHeight() / 3)+150, "Tap to Restart");
         this.text2 = new Text(context,getWidth() / 5 + 140, getHeight() / 2 + 10, "Best: ");
         this.initComponents = true;

@@ -7,9 +7,9 @@ The data structure used to develop the game was a queue, it was used to store th
 ### Overview
 <div>
 
-  <img src="https://raw.githubusercontent.com/Junior-16/computer-science-codes/master/Fase-3/Programacao-I/Screenshot_20190625-023442.png" height="550" width="311"  hspace="15"/>
+  <img src="https://raw.githubusercontent.com/arufonsekun/computer-science-codes/master/fase-3/Programacao-I/Screenshot_20190625-023432.png" height="550" width="311"  hspace="15"/>
   
-  <img src="https://raw.githubusercontent.com/Junior-16/computer-science-codes/master/Fase-3/Programacao-I/Screenshot_20190625-023524.png" height="550" width="311"/>
+  <img src="https://raw.githubusercontent.com/arufonsekun/computer-science-codes/master/fase-3/Programacao-I/Screenshot_20190625-023442.png" height="550" width="311"/>
    
 </div>
 
